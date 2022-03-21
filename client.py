@@ -26,15 +26,19 @@ def main():
     size = [1000, 700] # Set the width and height of the screen [width, height]
     screen = pygame.display.set_mode(size)
     clock = pygame.time.Clock() # Used to manage how fast the screen updates
-    in_queue, out_queue = queue.Queue(), queue.Queue() 
+    in_stack, out_queue = [], queue.Queue() 
     pygame.display.set_caption("Client") # Set the title of the window
-    s = socket_set_up(in_queue, out_queue) # Set up the socket
-    actual_player = int(in_queue.get())
+    s = socket_set_up(in_stack, out_queue) # Set up the socket
+
+    while in_stack == []:
+        time.sleep(0.1)
+        
+    actual_player = int(in_stack.pop())
     other_player = 1 if actual_player == 2 else 2 
 
     players = {
-    'p1': assets.caracter.Caracter(screen, 100, 100, 50, 50, (255, 0, 0), in_queue, out_queue, True if actual_player == 1 else False),
-    'p2': assets.caracter.Caracter(screen, 100, 200, 50, 50, (0, 0, 255), in_queue, out_queue, True if actual_player == 2 else False)
+    'p1': assets.caracter.Caracter(screen, 100, 100, 50, 50, (255, 0, 0), in_stack, out_queue, True if actual_player == 1 else False),
+    'p2': assets.caracter.Caracter(screen, 100, 200, 50, 50, (0, 0, 255), in_stack, out_queue, True if actual_player == 2 else False)
     } # Create a dictionary of players
 
     assets.game_loop.game_loop(False, clock, screen, players[f'p{actual_player}'], players[f'p{other_player}']) #  Main Program Loop

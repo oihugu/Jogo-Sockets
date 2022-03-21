@@ -14,7 +14,7 @@ def recive_data(s, in_q):
         if not data:
             break
         
-        in_q.put(data.decode().replace('$', ''))
+        in_q.append(data.decode().replace('$', ''))
 
         if data.decode() == 'quit':
             running = False
